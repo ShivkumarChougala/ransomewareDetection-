@@ -1,0 +1,30 @@
+name: Docker CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 🧾 Checkout code
+      uses: actions/checkout@v3
+
+    - name: 🐳 Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: 🔍 Build Docker image using Docker Compose
+      run: docker-compose build
+
+    - name: 🏃 Run container in background
+      run: docker-compose up -d
+
+    - name: 📦 Show running containers
+      run: docker ps -a
+
+    - name: 📄 Show logs (optional)
+      run: docker logs $(docker ps -q --filter name=file-analyzer)
