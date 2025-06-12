@@ -1,8 +1,11 @@
 # Use a lightweight Debian image
 FROM debian:stable-slim
 
-# Install required packages including libcurl
+# Install Python and required packages
 RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-venv \
+    python3-pip \
     inotify-tools \
     strace \
     tcpdump \
@@ -14,12 +17,23 @@ RUN apt-get update && apt-get install -y \
 # Create log directory
 RUN mkdir -p /sandbox/logs
 
-# Copy analysis script
+# Copy analysis script and set permissions
 COPY analysis.sh /usr/local/bin/analysis.sh
 RUN chmod +x /usr/local/bin/analysis.sh
 
 # Set working directory
 WORKDIR /sandbox
 
-# Set default entrypoint
-ENTRYPOINT ["/usr/local/bin/analysis.sh"]
+# Copy requirements and all app files
+COPY requirements.txt .
+COPY . .
+
+# Create venv and install packages there
+RUN python3 -m venv /opt/venv && \
+    /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
+
+# Set environment variables to use venv by default
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Run the main app
+CMD ["python3", "final1.py"]

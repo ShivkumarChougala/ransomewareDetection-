@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  file-analyzer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: final-analyzer
+    volumes:
+      - ./watched_folder:/sandbox/watched_folder
+      - ./backup:/sandbox/backup
+      - ./quarantine:/sandbox/quarantine
+      - ./logs:/sandbox/logs
+    ports:
+      - "5000:5000"
+    command: ["python3", "final1.py"]

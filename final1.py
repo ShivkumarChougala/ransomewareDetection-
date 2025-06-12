@@ -237,4 +237,5 @@ if __name__ == "__main__":
     watcher_thread = threading.Thread(target=start_watcher)
     watcher_thread.daemon = True
     watcher_thread.start()
-    socketio.run(app, host='0.0.0.0', port=5000)
+    socketio.run(app, host='0.0.0.0', port=5000, allow_unsafe_werkzeug=True)
+
