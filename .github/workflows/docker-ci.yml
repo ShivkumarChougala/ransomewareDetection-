@@ -2,35 +2,27 @@ name: Docker CI
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
   build-and-run:
     runs-on: ubuntu-latest
 
     steps:
-    - name: 🧾 Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v3
 
-    - name: 🐳 Set up Docker
-      uses: docker/setup-buildx-action@v3
+      - name: Install Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/v2.27.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose version
 
-    - name: 🛠 Install Docker Compose
-      run: |
-        sudo curl -L "https://github.com/docker/compose/releases/download/v2.27.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-        sudo chmod +x /usr/local/bin/docker-compose
-        docker-compose version
+      - name: Build containers
+        run: docker-compose build
+        working-directory: ./opt/FInal/ALLLA/Final
 
-    - name: 🔧 Build Docker container
-      run: docker-compose build
-
-    - name: 🚀 Run Docker container
-      run: docker-compose up -d
-
-    - name: 🧪 Show running containers
-      run: docker ps -a
-
-    - name: 📄 Show logs (optional)
-      run: docker logs $(docker ps -q --filter name=file-analyzer)
+      - name: Run containers
+        run: docker-compose up -d
+        working-directory: ./opt/FInal/ALLLA/Final
