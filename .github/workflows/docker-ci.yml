@@ -14,19 +14,12 @@ jobs:
     - name: 🔄 Checkout code
       uses: actions/checkout@v3
 
-    - name: 🐋 Install Docker Compose
-      run: |
-        sudo curl -L "https://github.com/docker/compose/releases/download/v2.27.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-        sudo chmod +x /usr/local/bin/docker-compose
-        docker-compose --version
+    - name: 🐋 Set up Docker Buildx (optional but good practice)
+      uses: docker/setup-buildx-action@v3
 
-    - name: 🧱 Build Docker containers
-      run: docker-compose build
-      working-directory: ./Final
+    - name: 🧱 Build Docker Image
+      run: docker build -t final-analyzer .
+      working-directory: ./  # This is your repo root where Dockerfile is
 
-    - name: 🚀 Run Docker containers
-      run: docker-compose up -d
-      working-directory: ./Final
-
-    - name: 📄 Show running containers
-      run: docker ps -a
+    - name: 🚀 Run Docker Container
+      run: docker run --rm final-analyzer
