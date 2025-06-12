@@ -14,16 +14,22 @@ jobs:
     - name: 🧾 Checkout code
       uses: actions/checkout@v3
 
-    - name: 🐳 Set up Docker Buildx
+    - name: 🐳 Set up Docker
       uses: docker/setup-buildx-action@v3
 
-    - name: 🔍 Build Docker image using Docker Compose
+    - name: 🛠 Install Docker Compose
+      run: |
+        sudo curl -L "https://github.com/docker/compose/releases/download/v2.27.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+        sudo chmod +x /usr/local/bin/docker-compose
+        docker-compose version
+
+    - name: 🔧 Build Docker container
       run: docker-compose build
 
-    - name: 🏃 Run container in background
+    - name: 🚀 Run Docker container
       run: docker-compose up -d
 
-    - name: 📦 Show running containers
+    - name: 🧪 Show running containers
       run: docker ps -a
 
     - name: 📄 Show logs (optional)
